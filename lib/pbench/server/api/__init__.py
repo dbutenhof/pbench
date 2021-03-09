@@ -17,10 +17,12 @@ from pbench.server.api.resources.upload_api import Upload, HostInfo
 from pbench.server.api.resources.graphql_api import GraphQL
 from pbench.common.logger import get_pbench_logger
 from pbench.server.api.resources.query_apis.elasticsearch_api import Elasticsearch
-from pbench.server.api.resources.query_apis.query_controllers import QueryControllers
+from pbench.server.api.resources.query_apis.query_controller_list import (
+    QueryControllerList,
+)
 from pbench.server.database.database import Database
-from pbench.server.api.resources.query_apis.query_results import QueryResults
-from pbench.server.api.resources.query_apis.query_result import QueryResult
+from pbench.server.api.resources.query_apis.query_dataset_list import QueryDatasetList
+from pbench.server.api.resources.query_apis.query_dataset import QueryDataset
 from pbench.server.api.resources.query_apis.query_month_indices import QueryMonthIndices
 from pbench.server.api.auth import Auth
 from pbench.server.api.resources.users_api import (
@@ -61,7 +63,7 @@ def register_endpoints(api, app, config):
         GraphQL, f"{base_uri}/graphql", resource_class_args=(config, logger),
     )
     api.add_resource(
-        QueryControllers,
+        QueryControllerList,
         f"{base_uri}/controllers/list",
         resource_class_args=(config, logger),
     )
@@ -69,6 +71,16 @@ def register_endpoints(api, app, config):
         QueryMonthIndices,
         f"{base_uri}/controllers/months",
         resource_class_args=(config, logger),
+    )
+    api.add_resource(
+        QueryDatasetList,
+        f"{base_uri}/datasets/list",
+        resource_class_args=(config, app.logger),
+    )
+    api.add_resource(
+        QueryDataset,
+        f"{base_uri}/datasets/detail",
+        resource_class_args=(config, app.logger),
     )
 
     api.add_resource(
@@ -84,16 +96,6 @@ def register_endpoints(api, app, config):
         UserAPI,
         f"{base_uri}/user/<string:username>",
         resource_class_args=(logger, token_auth),
-    )
-    api.add_resource(
-        QueryResults,
-        f"{base_uri}/datasets/list",
-        resource_class_args=(config, app.logger),
-    )
-    api.add_resource(
-        QueryResult,
-        f"{base_uri}/datasets/detail",
-        resource_class_args=(config, app.logger),
     )
 
 
