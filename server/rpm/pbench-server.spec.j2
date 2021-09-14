@@ -58,8 +58,12 @@ cp -a ./server/* %{buildroot}/%{installdir}
 mkdir -p %{buildroot}/%{installdir}/%{static}
 cp -a ./web-server/* %{buildroot}/%{installdir}/%{static}
 
-# for the npm install below
+# For the npm install below
 mv %{buildroot}/%{installdir}/%{static}/package.json %{buildroot}/%{installdir}
+
+# For the environment the pbench-server systemd service requires
+mkdir -p %{buildroot}/etc/sysconfig
+mv %{buildroot}/%{installdir}/lib/config/pbench-server.env %{buildroot}/etc/sysconfig/pbench-server
 
 %post
 # Install python dependencies as pbench user into user's site-packages
@@ -125,6 +129,8 @@ fi
 %posttrans
 
 %files
+
+%attr(644, pbench, pbench) /etc/sysconfig/pbench-server
 
 %defattr(644, pbench, pbench, 755)
 /%{installdir}/VERSION
